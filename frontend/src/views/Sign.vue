@@ -11,7 +11,7 @@
       />
       <button type="submit">Sign Up</button>
     </form>
-    <p v-if="showSuccessMessage">{{ successMessage }}</p>
+    <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -25,12 +25,16 @@ export default {
       username: "",
       password1: "",
       password2: "",
-      showSuccessMessage: false,
-      successMessage: "회원가입이 완료되었습니다.",
+      errorMessage: null,
     };
   },
   methods: {
     submitForm() {
+      if (this.password1 !== this.password2) {
+        this.errorMessage = "비밀번호가 일치하지 않습니다.";
+        return;
+      }
+
       const userData = {
         email: this.email,
         username: this.username,
@@ -42,12 +46,13 @@ export default {
         .then((response) => {
           console.log("User registered successfully", response.data);
           // Optionally, show a success message or redirect to a new page
-          this.showSuccessMessage = true; // Success 메시지 표시
+          this.errorMessage = null; // 에러 메시지 초기화
           this.clearForm(); // 폼 초기화
         })
         .catch((error) => {
           console.error("Error during registration", error);
           // Optionally, show an error message to the user
+          this.errorMessage = "회원가입에 실패했습니다.";
         });
     },
     clearForm() {

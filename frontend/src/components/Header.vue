@@ -1,6 +1,6 @@
-<script setup>
+<!-- <script setup>
 // import { headerNav } from "@/constrant/index";
-</script>
+</script> -->
 
 <template>
   <header id="header">
@@ -16,17 +16,54 @@
           <li>
             <router-link to="/contact" class="nav-link">컨택트</router-link>
           </li>
+          <li v-if="loggedIn">
+            <!-- 로그인 상태일 때에만 보여짐 -->
+            {{ user.email }}님 환영합니다!
+          </li>
+          <li v-else>
+            <router-link to="/login" class="nav-link">로그인</router-link>
+          </li>
         </ul>
         <div class="utll-menu">
-          <router-link to="/sign" class="sign-link">
+          <button v-if="loggedIn" @click="logout" class="logout-button">
+            로그아웃
+          </button>
+          <router-link v-else to="/sign" class="sign-link">
             <i class="ri-user-line"></i>
-            <i class="hidden">로그인</i></router-link
-          >
+            <i class="hidden">로그인</i>
+          </router-link>
         </div>
       </nav>
     </div>
   </header>
 </template>
+
+<script setup>
+import { computed } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const store = useStore();
+const router = useRouter();
+
+const loggedIn = computed(() => store.state.loggedIn);
+const user = computed(() => store.state.user);
+
+const logout = () => {
+  axios
+    .post("http://localhost:8000/api/accounts/logout/")
+    .then(() => {
+      console.log("로그아웃");
+      store.commit("logout");
+      store.commit("clearUser");
+      router.push("/");
+    })
+    .catch((error) => {
+      console.error("로그아웃 에러 발생", error);
+    });
+};
+</script>
 
 <style lang="scss">
 @import "@/assets/scss/reset";

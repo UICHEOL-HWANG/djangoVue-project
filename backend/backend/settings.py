@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,12 +28,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',  # 커스텀 인증 백엔드 클래스 경로
+    'django.contrib.auth.backends.ModelBackend',  # 기본 백엔드 유지
+]
+
+
 CORS_ALLOW_ALL_ORIGINS = False  # 모든 도메인에서의 요청 허용
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://172.30.1.91:8080",
-
-
 ]
 
 
@@ -118,9 +123,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
